@@ -20,6 +20,7 @@ const supportedLibraries: IStyleLibrary[] = [
   {
     packageName: "styled-components",
     defaultImport: true,
+    importPath: "styled-components/native",
   },
   {
     packageName: "@emotion/styled",
@@ -60,7 +61,7 @@ const extractUsedStyleLibrary = async (
   const content = await workspace.fs.readFile(fileUri);
   const jsonContent = JSON.parse(new TextDecoder("utf-8").decode(content));
 
-  return supportedLibraries.find(lib =>
+  return supportedLibraries.find((lib) =>
     Object.keys(jsonContent.dependencies).includes(lib.packageName)
   );
 };

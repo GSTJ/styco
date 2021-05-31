@@ -26,3 +26,21 @@ test("unit infer should work", () => {
 
   expect(styleBlock).toBe("\n  margin-top: 10px;\n");
 });
+
+describe("native styles", () => {
+  test("vertical styles should be parsed correctly", () => {
+    const properties = [{ key: "marginVertical", value: "10" }];
+
+    const styleBlock = generateStyleBlock(properties);
+
+    expect(styleBlock).toBe("\n  margin: 10px 0;\n");
+  });
+
+  test("horizontal styles should be parsed correctly", () => {
+    const properties = [{ key: "marginHorizontal", value: "10" }];
+
+    const styleBlock = generateStyleBlock(properties);
+
+    expect(styleBlock).toBe("\n  margin: 0 10px;\n");
+  });
+});

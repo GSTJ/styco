@@ -31,11 +31,38 @@ const getUnits = (propertyName: string) => {
   return "px";
 };
 
+const nativeHorizontalStyles = /-horizontal/g;
+const nativeVerticalStyles = /-vertical/g;
+
+const getMultipleValues = (prop: Property) => {
+  if (nativeHorizontalStyles.test(prop.key)) {
+    return `0 ${prop.value}`;
+  }
+
+  if (nativeVerticalStyles.test(prop.key)) {
+    return `${prop.value} 0`;
+  }
+
+  return prop.value;
+};
+
+const stringifyStyles = (prop: Property) => {
+  prop.key = camelCaseToKebabCase(prop.key);
+
+  const unit = getUnits(prop.key);
+
+  prop.value += unit;
+  prop.value = getMultipleValues(prop);
+
+  prop.key = prop.key
+    .replace(nativeHorizontalStyles, "")
+    .replace(nativeVerticalStyles, "");
+
+  return `  ${prop.key}: ${prop.value}`;
+};
+
 export const generateStyleBlock = (properties: Property[]) => {
-  let stringifiedStyles = properties.map((prop) => {
-    const unit = getUnits(prop.key);
-    return `  ${camelCaseToKebabCase(prop.key)}: ${prop.value}${unit}`;
-  });
+  let stringifiedStyles = properties.map(stringifyStyles);
 
   if (workspace.getConfiguration("styco").get("orderStyleByName")) {
     stringifiedStyles = stringifiedStyles.sort();

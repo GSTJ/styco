@@ -25,9 +25,16 @@ const camelCaseToKebabCase = (input: string) => {
   return output;
 };
 
-const generateStyleBlock = (properties: Property[]) => {
-  let stringifiedStyles = properties.map(prop => {
-    return `  ${camelCaseToKebabCase(prop.key)}: ${prop.value}`;
+const getUnits = (propertyName: string) => {
+  const unitlessUnits = /flex/;
+  if (unitlessUnits.test(propertyName)) return "";
+  return "px";
+};
+
+export const generateStyleBlock = (properties: Property[]) => {
+  let stringifiedStyles = properties.map((prop) => {
+    const unit = getUnits(prop.key);
+    return `  ${camelCaseToKebabCase(prop.key)}: ${prop.value}${unit}`;
   });
 
   if (workspace.getConfiguration("styco").get("orderStyleByName")) {
